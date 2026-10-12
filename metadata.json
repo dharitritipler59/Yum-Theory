@@ -1,0 +1,7 @@
+{
+  "name": "Verdant Table - Healthy Recipes",
+  "description": "A food-focused editorial publication featuring approachable healthy recipes, seasonal plant-forward meals, and nourishing weeknight dinners.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
