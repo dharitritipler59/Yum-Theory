@@ -72,7 +72,7 @@ export default function App() {
   useEffect(() => {
     let title = 'Healthy Recipes – Yum Theory';
     let description =
-      'Explore approachable healthy recipes, seasonal plant-forward meals, and nourishing weeknight dinners created for balanced everyday cooking.';
+      'Explore approachable healthy recipes, seasonal plant-forward meals, and nourishing weeknight dinners made with simple ingredients and easy cooking techniques. Discover delicious weight-loss-friendly meals that make eating well effortless.';
 
     if (activeRecipe) {
       title = `${activeRecipe.title} – Yum Theory`;

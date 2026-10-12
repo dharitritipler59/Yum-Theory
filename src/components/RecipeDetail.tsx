@@ -76,14 +76,15 @@ export const RecipeDetail: React.FC<RecipeDetailProps> = ({
 
   // Helper to format scaled ingredient quantity
   const formatQuantity = (baseAmount: number): string => {
+    if (!baseAmount || baseAmount === 0) return '';
     const scaled = baseAmount * servingMultiplier;
     // Round to clean decimal or fractions
-    if (scaled === 0.25) return '1/4';
-    if (scaled === 0.33 || scaled === 0.34) return '1/3';
-    if (scaled === 0.5) return '1/2';
-    if (scaled === 0.75) return '3/4';
-    if (scaled === 1.5) return '1 1/2';
-    if (scaled === 2.5) return '2 1/2';
+    if (Math.abs(scaled - 0.25) < 0.01) return '¼';
+    if (Math.abs(scaled - 0.33) < 0.02) return '⅓';
+    if (Math.abs(scaled - 0.5) < 0.01) return '½';
+    if (Math.abs(scaled - 0.75) < 0.01) return '¾';
+    if (Math.abs(scaled - 1.5) < 0.01) return '1 ½';
+    if (Math.abs(scaled - 2.5) < 0.01) return '2 ½';
     if (Number.isInteger(scaled)) return scaled.toString();
     return scaled.toFixed(1).replace(/\.0$/, '');
   };
@@ -291,9 +292,11 @@ export const RecipeDetail: React.FC<RecipeDetailProps> = ({
                               {isChecked && <Check className="w-3 h-3" />}
                             </span>
                             <span className={isChecked ? 'line-through text-stone-400' : 'text-stone-800'}>
-                              <strong className="font-semibold text-stone-900">
-                                {formatQuantity(ing.amount)} {ing.unit}
-                              </strong>{' '}
+                              {ing.amount > 0 && (
+                                <strong className="font-semibold text-stone-900 mr-1.5">
+                                  {formatQuantity(ing.amount)} {ing.unit}
+                                </strong>
+                              )}
                               <span>{ing.item}</span>
                               {ing.notes && (
                                 <span className="text-xs text-stone-500 italic block">

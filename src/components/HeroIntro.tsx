@@ -35,7 +35,7 @@ export const HeroIntro: React.FC<HeroIntroProps> = ({
 
             {/* SEO and Introductory Paragraph */}
             <p className="mt-3 text-stone-600 text-sm sm:text-base leading-relaxed max-w-xl">
-              Explore approachable healthy recipes, seasonal plant-forward meals, and nourishing weeknight dinners crafted with wholesome ingredients and simple cooking techniques to make eating well effortless.
+              Explore approachable healthy recipes, seasonal plant-forward meals, and nourishing weeknight dinners made with simple ingredients and easy cooking techniques. Discover delicious weight-loss-friendly meals that make eating well effortless.
             </p>
           </div>
 
