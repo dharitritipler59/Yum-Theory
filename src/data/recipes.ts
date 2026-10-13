@@ -509,8 +509,8 @@ export const RECIPES_DATA: Recipe[] = [
   {
     id: 'rec-06',
     slug: 'lemon-herb-sheet-pan-chicken',
-    title: 'Lemon Herb Sheet Pan Roast Chicken',
-    dek: 'Golden roasted chicken breast sliced over caramelized rainbow carrots, tender broccoli florets, and sweet roasted garlic cloves.',
+    title: 'Lemon Herb Sheet Pan Roast Chicken Recipe for 100 Grams of Chicken',
+    dek: 'A healthy chicken recipe featuring golden-roasted chicken breast, tender vegetables, and roasted garlic, with details on 100 g chicken protein for a wholesome, protein-rich meal.',
     metaDescription: 'Sheet pan lemon herb roasted chicken breast with rainbow carrots and broccoli. An effortless high-protein, low-mess healthy weeknight dinner.',
     image: sheetChickenImg,
     imageAlt: 'Sliced golden roasted herb chicken breast displayed on a parchment-lined sheet pan alongside roasted heirloom carrots, broccoli, and fresh herbs.',
