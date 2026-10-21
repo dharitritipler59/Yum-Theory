@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
+  ArrowUp,
   Clock,
   ChefHat,
   Bookmark,
@@ -90,7 +91,7 @@ export const RecipeDetail: React.FC<RecipeDetailProps> = ({
   };
 
   return (
-    <article className="min-h-screen bg-[#FAF9F5] py-8 sm:py-12" aria-labelledby="recipe-main-title">
+    <article id="recipe-top" className="min-h-screen bg-[#FAF9F5] py-8 sm:py-12 scroll-smooth" aria-labelledby="recipe-main-title">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
         <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs text-stone-500">
@@ -231,7 +232,7 @@ export const RecipeDetail: React.FC<RecipeDetailProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
           {/* Left Column: Ingredients with Servings Scaler */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white p-6 rounded-xl border border-stone-200/80 shadow-xs">
+            <div id="recipe-ingredients" className="bg-white p-6 rounded-xl border border-stone-200/80 shadow-xs scroll-mt-24">
               <div className="flex items-center justify-between pb-4 border-b border-stone-200">
                 <h2 className="text-xl font-serif font-bold text-stone-900">
                   Ingredients
@@ -314,7 +315,7 @@ export const RecipeDetail: React.FC<RecipeDetailProps> = ({
             </div>
 
             {/* Nutrition Facts Summary Card */}
-            <div className="bg-white p-5 rounded-xl border border-stone-200/80 shadow-xs">
+            <div id="recipe-nutrition" className="bg-white p-5 rounded-xl border border-stone-200/80 shadow-xs scroll-mt-24">
               <h3 className="text-xs font-bold uppercase tracking-widest text-stone-500 mb-3">
                 Nutrition Profile (Per Serving)
               </h3>
@@ -349,7 +350,7 @@ export const RecipeDetail: React.FC<RecipeDetailProps> = ({
 
           {/* Right Column: Step-by-Step Cooking Instructions */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white p-6 rounded-xl border border-stone-200/80 shadow-xs">
+            <div id="recipe-instructions" className="bg-white p-6 rounded-xl border border-stone-200/80 shadow-xs scroll-mt-24">
               <h2 className="text-xl font-serif font-bold text-stone-900 pb-4 border-b border-stone-200">
                 Preparation Instructions
               </h2>
@@ -420,7 +421,7 @@ export const RecipeDetail: React.FC<RecipeDetailProps> = ({
         </div>
 
         {/* PART 2 SEO & AEO: At least 2 H2 question subheadings with concise answers */}
-        <section className="mb-12 bg-white p-6 sm:p-8 rounded-2xl border border-stone-200/80 shadow-xs" aria-labelledby="recipe-faq-title">
+        <section id="recipe-faqs" className="mb-12 bg-white p-6 sm:p-8 rounded-2xl border border-stone-200/80 shadow-xs scroll-mt-24" aria-labelledby="recipe-faq-title">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-800 mb-4">
             <HelpCircle className="w-4 h-4" />
             <span id="recipe-faq-title">Frequently Asked Questions & Nutritional Insights</span>
@@ -476,6 +477,63 @@ export const RecipeDetail: React.FC<RecipeDetailProps> = ({
             </div>
           </section>
         )}
+
+        {/* Bottom Article Navigation & Anchor Links */}
+        <nav aria-label="Article quick links" className="mt-12 pt-6 border-t border-stone-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+          <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-start">
+            <span className="text-stone-400 font-medium uppercase tracking-wider text-[11px]">Jump to:</span>
+            <a
+              href="#recipe-ingredients"
+              className="text-emerald-800 hover:text-emerald-950 font-medium hover:underline transition-colors"
+            >
+              Ingredients
+            </a>
+            <span aria-hidden="true" className="text-stone-300">·</span>
+            <a
+              href="#recipe-instructions"
+              className="text-emerald-800 hover:text-emerald-950 font-medium hover:underline transition-colors"
+            >
+              Instructions
+            </a>
+            <span aria-hidden="true" className="text-stone-300">·</span>
+            <a
+              href="#recipe-nutrition"
+              className="text-emerald-800 hover:text-emerald-950 font-medium hover:underline transition-colors"
+            >
+              Nutrition
+            </a>
+            <span aria-hidden="true" className="text-stone-300">·</span>
+            <a
+              href="#recipe-faqs"
+              className="text-emerald-800 hover:text-emerald-950 font-medium hover:underline transition-colors"
+            >
+              FAQs
+            </a>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>All Recipes</span>
+            </button>
+            <a
+              href="#recipe-top"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-900 text-white font-medium hover:bg-emerald-800 transition-colors shadow-xs cursor-pointer"
+              title="Return to the top of this recipe"
+            >
+              <ArrowUp className="w-3.5 h-3.5" />
+              <span>Back to Top</span>
+            </a>
+          </div>
+        </nav>
       </div>
     </article>
   );

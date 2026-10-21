@@ -1,4 +1,16 @@
 {
+  "redirects": [
+    {
+      "source": "/old-hone",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/old-home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

@@ -13,9 +13,19 @@ import { RecipeDetail } from './components/RecipeDetail';
 import { AeoFaqSection } from './components/AeoFaqSection';
 import { Footer } from './components/Footer';
 import { AboutModal } from './components/AboutModal';
+import { NotFound } from './components/NotFound';
 
 export default function App() {
-  // Navigation / Routing State (Supports Clean Slugs e.g. /recipes/slug)
+  // Navigation & Path State (Supports clean slugs, 404 detection, and 301 redirects)
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    const p = window.location.pathname;
+    if (p === '/old-hone' || p === '/old-hone/' || p === '/old-home' || p === '/old-home/') {
+      window.history.replaceState(null, '', '/');
+      return '/';
+    }
+    return p;
+  });
+
   const [activeSlug, setActiveSlug] = useState<string | null>(() => {
     const path = window.location.pathname;
     if (path.startsWith('/recipes/')) {
@@ -52,10 +62,25 @@ export default function App() {
     return RECIPES_DATA.find((r) => r.slug === activeSlug) || null;
   }, [activeSlug]);
 
-  // Handle Browser Back / Forward buttons with popstate
+  // Check if current route is 404
+  const isNotFound = useMemo(() => {
+    if (currentPath === '/' || currentPath === '') return false;
+    if (currentPath.startsWith('/recipes/')) {
+      const slug = currentPath.replace('/recipes/', '').replace(/\/$/, '');
+      return !RECIPES_DATA.some((r) => r.slug === slug);
+    }
+    return true;
+  }, [currentPath]);
+
+  // Handle Browser Back / Forward buttons with popstate and 301 redirects
   useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname;
+      let path = window.location.pathname;
+      if (path === '/old-hone' || path === '/old-hone/' || path === '/old-home' || path === '/old-home/') {
+        window.history.replaceState(null, '', '/');
+        path = '/';
+      }
+      setCurrentPath(path);
       if (path.startsWith('/recipes/')) {
         const slug = path.replace('/recipes/', '').replace(/\/$/, '');
         setActiveSlug(slug || null);
@@ -74,7 +99,11 @@ export default function App() {
     let description =
       'Explore approachable healthy recipes, seasonal plant-forward meals, and nourishing weeknight dinners made with simple ingredients and easy cooking techniques. Discover delicious weight-loss-friendly meals that make eating well effortless.';
 
-    if (activeRecipe) {
+    if (isNotFound) {
+      title = 'Page Not Found (404) – Yum Theory';
+      description =
+        'The recipe or page you were looking for could not be found. Explore our healthy recipe collection on Yum Theory.';
+    } else if (activeRecipe) {
       title = `${activeRecipe.title} – Yum Theory`;
       description = activeRecipe.metaDescription;
     }
@@ -95,6 +124,36 @@ export default function App() {
     if (ogTitle) ogTitle.setAttribute('content', title);
     const ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc) ogDesc.setAttribute('content', description);
+
+    // Self-referencing canonical tag on every page
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    const baseOrigin =
+      window.location.origin.includes('localhost') || window.location.origin.includes('run.app')
+        ? 'https://yum-theory.vercel.app'
+        : window.location.origin;
+
+    let canonicalPath = '/';
+    if (activeRecipe) {
+      canonicalPath = `/recipes/${activeRecipe.slug}`;
+    } else if (isNotFound) {
+      canonicalPath = currentPath;
+    }
+    const fullCanonicalUrl = `${baseOrigin}${canonicalPath}`;
+    canonical.setAttribute('href', fullCanonicalUrl);
+
+    // Update OpenGraph URL
+    let ogUrl = document.querySelector('meta[property="og:url"]');
+    if (!ogUrl) {
+      ogUrl = document.createElement('meta');
+      ogUrl.setAttribute('property', 'og:url');
+      document.head.appendChild(ogUrl);
+    }
+    ogUrl.setAttribute('content', fullCanonicalUrl);
 
     // Update Schema.org JSON-LD
     let scriptTag = document.getElementById('schema-jsonld') as HTMLScriptElement | null;
@@ -160,11 +219,12 @@ export default function App() {
       };
       scriptTag.text = JSON.stringify(schemaData);
     }
-  }, [activeRecipe]);
+  }, [activeRecipe, isNotFound, currentPath]);
 
   // Navigate to Recipe Detail with clean slug URL
   const handleSelectRecipe = useCallback((recipe: Recipe) => {
     setActiveSlug(recipe.slug);
+    setCurrentPath(`/recipes/${recipe.slug}`);
     window.history.pushState(null, '', `/recipes/${recipe.slug}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -172,6 +232,7 @@ export default function App() {
   // Navigate back to Homepage
   const handleNavigateHome = useCallback(() => {
     setActiveSlug(null);
+    setCurrentPath('/');
     window.history.pushState(null, '', '/');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -316,7 +377,17 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {activeRecipe ? (
+        {isNotFound ? (
+          /* Friendly Custom 404 Page */
+          <NotFound
+            onNavigateHome={handleNavigateHome}
+            onSelectRecipe={handleSelectRecipe}
+            onSearch={(q) => {
+              setSearchQuery(q);
+              handleNavigateHome();
+            }}
+          />
+        ) : activeRecipe ? (
           /* Recipe Detail Page View */
           <RecipeDetail
             recipe={activeRecipe}
